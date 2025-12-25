@@ -39,7 +39,7 @@ Benchmarks were measured using [this notebook](examples/profiling.ipynb).
 # FAQ
 
 - **Q:** What sharding should I use? **A:** Each model uses a 2D device mesh: one dimension for TP (Tensor Parallelism) and the other dimension for FSDP (Fully Sharded Data Parallel). In most cases, it is preferable to use pure FSDP for training (`tp_devices=1`) and pure TP for inference (e.g. `tp_devices=8`).
-- **Q:** What's the main performance bottleneck? **A:** Currently it is the attention implementation ([jax.nn.dot_product_attention](https://docs.jax.dev/en/latest/_autosummary/jax.nn.dot_product_attention.html)), which uses a simple dot product. Once there's a universal one-line flash attention implementation in [tokamax](https://github.com/openxla/tokamax/tree/main), I will switch to that. For more perfomant (but also more complex) JAX model implementations, please see [jax-ml/jax-llm-examples](https://github.com/jax-ml/jax-llm-examples/tree/main).
+- **Q:** What's the main performance bottleneck? **A:** Currently it is the attention implementation ([jax.nn.dot_product_attention](https://docs.jax.dev/en/latest/_autosummary/jax.nn.dot_product_attention.html)), which uses a simple dot product. Once there's a universal one-line flash attention implementation in [tokamax](https://github.com/openxla/tokamax/tree/main), I will switch to that. For more perfomant JAX model implementations, please see [jax-ml/jax-llm-examples](https://github.com/jax-ml/jax-llm-examples/tree/main).
 
 # Notation
 

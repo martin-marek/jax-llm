@@ -1,7 +1,7 @@
 
 # Getting started
 
-This library provides minimal implementations of language models in pure JAX with support for training, inference, FSDP, TP, and HuggingFace checkpoints. Each model is implemented in a standalone <160 LOC file. Because the implementations are so short, the hope is that you can use them as a reference for implementing new models -- e.g. `qwen3.py` and `llama3.py` differ in just 3 LOC!
+This library provides minimal implementations of language models in pure JAX with support for training, inference, FSDP, TP, and HuggingFace checkpoints. Each model is implemented in a standalone <160 LOC file. Because the implementations are so short, the hope is that you can use them as a reference for implementing new models -- e.g. [qwen3.py](models/qwen3.py) and [llama3.py](models/llama3.py) differ in just 3 LOC!
 
 A model is defined as tuple of weights and pure functions: `weights`, `forward`, `init_kv`, and `tokenizer`. Here's an example of a forward pass:
 

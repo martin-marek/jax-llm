@@ -82,6 +82,7 @@ def forward(cfg, x, weights, kv=None, pos=0):
     x = weights['embed_tokens'].at[x, :].get(out_sharding=P('data', None, None)).astype(jnp.bfloat16)
     
     # iterate over hidden layers
+    return_kv = kv is not None
     if kv is None: kv = defaultdict(lambda: None)
     for i in range(cfg['num_hidden_layers']):
         layer_weights = {k.replace(prefix, ''):v for k,v in weights.items() if (prefix:=f'layers.{i}.') in k}
@@ -92,7 +93,7 @@ def forward(cfg, x, weights, kv=None, pos=0):
     x = rms_norm(x, weights['norm'], cfg['rms_norm_eps'])
     logits = jnp.einsum('btd,vd->btv', x, out_embed, preferred_element_type=x.dtype, out_sharding=P('data', None, 'model'))
 
-    return logits, kv
+    return (logits, kv) if return_kv else logits
 
 
 def init_kv(L, K, H, B, T):

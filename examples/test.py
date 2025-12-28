@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
 import numpy as np
-from llama3 import load
+from qwen3 import load
 from sampling import sample
 
 
@@ -10,13 +10,13 @@ model = load()
 
 # forward pass (random input)
 x = jax.random.randint(jax.random.key(0), [8, 32], 0, 1<<15)
-logits, _ = model.forward(x, model.weights)
+logits = model.forward(x, model.weights)
 print(logits.shape)
 
 # sampling (random input)
 x = jax.random.randint(jax.random.key(0), [8, 1], 0, 1<<15)
 kv = model.init_kv(8, 16)
-logits, _ = model.forward(x, model.weights, kv, 0)
+logits, kv = model.forward(x, model.weights, kv, 0)
 print(logits.shape)
 
 # sampling (text)

@@ -9,7 +9,7 @@ A model is defined as tuple of weights and pure functions: `weights`, `forward`,
 from models import qwen3
 model = qwen3.load('Qwen/Qwen3-4B')
 x = jnp.ones([8, 128], dtype=jnp.int32)
-logits, kv = model.forward(x, model.weights)
+logits = model.forward(x, model.weights)
 ```
 
 The weights and tokenizer are loaded directly from a HuggingFace checkpoint -- there's no need to run any separate scripts to convert between checkpoint formats.

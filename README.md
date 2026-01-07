@@ -6,8 +6,9 @@ This library provides minimal implementations of language models in pure JAX wit
 A model is defined as tuple of weights and pure functions: `weights`, `forward`, `init_kv`, and `tokenizer`. Here's an example of a forward pass:
 
 ```python
+import jax.numpy as jnp
 from models import qwen3
-model = qwen3.load('Qwen/Qwen3-4B')
+model = qwen3.load('Qwen/Qwen3-0.6B-Base')
 x = jnp.ones([8, 128], dtype=jnp.int32)
 logits = model.forward(x, model.weights)
 ```
@@ -35,6 +36,13 @@ The following architectures are currently supported:
 | TPU v6e-8 | Qwen3-32B | 128 | 4096 | 8 | 42 tok/s | 5,400 tok/s | 56% |
 
 Benchmarks were measured using [this notebook](examples/profiling.ipynb).
+
+# Requirements
+
+For running on TPU, this should be sufficient:
+```bash
+pip install jax[tpu] transformers
+```
 
 # FAQ
 

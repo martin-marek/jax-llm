@@ -154,4 +154,5 @@ def load(model_id='Qwen/Qwen3-0.6B-Base', tp_devices=1, hf_ckpt_dir='~/weights/h
         if 'v_proj' in key: weights[key] = weights[key].reshape([K, H, D])
         if 'o_proj' in key: weights[key] = weights[key].reshape([D, N, H])
     
-    return Model(weights, partial(forward, cfg), partial(init_kv, L, K, H), tokenizer)
+    forward_fn = jax.jit(partial(forward, cfg), donate_argnames=('kv',))
+    return Model(weights, forward_fn, partial(init_kv, L, K, H), tokenizer)

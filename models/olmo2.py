@@ -156,4 +156,5 @@ def load(model_id='allenai/OLMo-2-0425-1B', tp_devices=1, hf_ckpt_dir='~/weights
         if 'q_norm' in key: weights[key] = weights[key].reshape([N, H])
         if 'k_norm' in key: weights[key] = weights[key].reshape([K, H])
     
-    return Model(weights, partial(forward, cfg), partial(init_kv, L, K, H), tokenizer)
+    forward_fn = jax.jit(partial(forward, cfg), donate_argnames=('kv',))
+    return Model(weights, forward_fn, partial(init_kv, L, K, H), tokenizer)

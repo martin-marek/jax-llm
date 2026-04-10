@@ -44,7 +44,8 @@ def train_step(forward, weights, x, learning_rate):
     y = jnp.roll(x, -1, axis=1)
 
     def loss_fn(weights):
-        logits = forward(x, weights).astype(jnp.float32)
+        logits, _ = forward(x, weights)
+        logits = logits.astype(jnp.float32)
         log_probs = jax.nn.log_softmax(logits)
         return -(jax.nn.one_hot(y, logits.shape[-1]) * log_probs).sum(axis=-1).mean()
 

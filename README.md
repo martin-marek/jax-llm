@@ -10,7 +10,7 @@ import jax.numpy as jnp
 from models import qwen3
 model = qwen3.load('Qwen/Qwen3-0.6B-Base')
 x = jnp.ones([8, 128], dtype=jnp.int32)
-logits = model.forward(x, model.weights)
+logits, _ = model.forward(x, model.weights)
 ```
 
 The weights and tokenizer are loaded directly from a HuggingFace checkpoint -- there's no need to run any separate scripts to convert between checkpoint formats.

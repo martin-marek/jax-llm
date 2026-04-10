@@ -25,17 +25,42 @@ The following architectures are currently supported:
 ### Training
 | Device | Model | Batch size | Seq. length | TP devices | MFU |
 | --- | --- | --- | --- | --- | --- |
-| TPU v6e-1 | Qwen3-4B | 8 | 512 | 1 | 28% |
-| TPU v6e-8 | Qwen3-8B | 128 | 512 | 1 | 30% |
+| TPU v6 lite-1 | Qwen3-4B | 8 | 512 | 1 | 35% |
+| TPU v6 lite-8 | Qwen3-8B | 128 | 512 | 1 | 25% |
 
 ### Sampling
-| Device | Model | Batch size | Seq. length | TP devices | Interactivity | Throughput | HBM bw. util. |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| TPU v6e-8 | Qwen3-32B | 1 | 512 | 8 | 108 tok/s | 108 tok/s | 28% |
-| TPU v6e-8 | Qwen3-32B | 512 | 512 | 8 | 42 tok/s | 21,600 tok/s | 33% |
-| TPU v6e-8 | Qwen3-32B | 128 | 4096 | 8 | 42 tok/s | 5,400 tok/s | 56% |
+| Device | Model | Batch size | Seq. length | TP devices | Interactivity | Throughput | HBM bw. util. | Memory footprint | MFU |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TPU v6 lite-8 | Qwen3-32B | 1 | 512 | 8 | 108 tok/s | 108 tok/s | 54% | 1.01x | 0.18% |
+| TPU v6 lite-8 | Qwen3-32B | 512 | 512 | 8 | 41 tok/s | 20,992 tok/s | 42% | 1.00x | 18.6% |
+| TPU v6 lite-8 | Qwen3-32B | 128 | 4096 | 8 | 42 tok/s | 5,363 tok/s | 65% | 1.00x | 5.3% |
 
-Benchmarks were measured using [this notebook](examples/profiling.ipynb).
+# Example
+
+Here's how to sample a short completion:
+
+```python
+import jax
+import numpy as np
+from models.qwen3 import load
+from models.sampling import sample
+
+model = load("Qwen/Qwen3-0.6B-Base")
+prompt = "Alchemy is"
+prompt_tokens = model.tokenizer(prompt)["input_ids"]
+tokens = np.full([1, 32], model.tokenizer.pad_token_id, dtype=np.int32)
+tokens[:, : len(prompt_tokens)] = prompt_tokens
+out_tokens = sample(
+    jax.random.key(0),
+    model.forward,
+    model.init_kv,
+    model.weights,
+    model.tokenizer,
+    tokens,
+    temperature=0.01,
+)
+print(model.tokenizer.batch_decode(out_tokens)[0])
+```
 
 # Requirements
 
